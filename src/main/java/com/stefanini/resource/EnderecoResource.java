@@ -1,16 +1,27 @@
 package com.stefanini.resource;
 
-import com.stefanini.dto.SucessoDto;
-import com.stefanini.model.Endereco;
-import com.stefanini.servico.EnderecoServico;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import com.stefanini.model.Endereco;
+import com.stefanini.servico.EnderecoServico;
 
 @Path("enderecos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -94,5 +105,10 @@ public class EnderecoResource {
     public Response obterEndereco(@PathParam("id") Long id) {
         return enderecoServico.encontrar(id).map(endereco -> Response.ok(endereco).build()).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
     }
-
+    
+    @GET
+    @Path("cep")
+    public Response obterEnderecoCep(@Valid Endereco endereco) {
+    	return Response.ok(enderecoServico.encontrarPorCep(endereco)).build();
+    }
 }

@@ -1,14 +1,19 @@
 package com.stefanini.servico;
 
-import com.stefanini.dao.EnderecoDao;
-import com.stefanini.model.Endereco;
-
-import javax.ejb.*;
-import javax.inject.Inject;
-import javax.validation.Valid;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.inject.Inject;
+import javax.validation.Valid;
+
+import com.stefanini.dao.EnderecoDao;
+import com.stefanini.model.Endereco;
 
 /**
  * 
@@ -24,11 +29,13 @@ public class EnderecoServico implements Serializable {
 	@Inject
 	private EnderecoDao dao;
 
+	@Inject
+	private CepServico cep;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 
 	public Endereco salvar(@Valid Endereco entity) {
-		return dao.salvar(entity);
+		return dao.salvar(cep.converterCep(entity));
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -50,5 +57,9 @@ public class EnderecoServico implements Serializable {
 
 	public Optional<Endereco> encontrar(Long id) {
 		return dao.encontrar(id);
+	}
+	
+	public String encontrarPorCep(@Valid Endereco endereco) {
+		return cep.buscarCep(endereco);
 	}
 }
