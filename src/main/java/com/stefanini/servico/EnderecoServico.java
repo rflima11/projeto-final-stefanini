@@ -59,7 +59,4 @@ public class EnderecoServico implements Serializable {
 		return dao.encontrar(id);
 	}
 	
-	public String encontrarPorCep(@Valid Endereco endereco) {
-		return cep.buscarCep(endereco);
-	}
 }

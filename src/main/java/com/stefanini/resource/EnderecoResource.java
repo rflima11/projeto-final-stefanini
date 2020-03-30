@@ -106,9 +106,4 @@ public class EnderecoResource {
         return enderecoServico.encontrar(id).map(endereco -> Response.ok(endereco).build()).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
     }
     
-    @GET
-    @Path("cep")
-    public Response obterEnderecoCep(@Valid Endereco endereco) {
-    	return Response.ok(enderecoServico.encontrarPorCep(endereco)).build();
-    }
 }

@@ -1,11 +1,6 @@
 package com.stefanini.servico;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -22,31 +17,6 @@ import com.stefanini.model.Endereco;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class CepServico {
 
-	
-	public static String buscarCep(Endereco endereco) {
-        String json;
-
-        try {
-            URL url = new URL("http://viacep.com.br/ws/"+ endereco.getCep() +"/json");
-            URLConnection urlConnection = url.openConnection();
-            InputStream is = urlConnection.getInputStream();
-      //    System.out.println(urlConnection.getClass());
-      //    InputStream is = urlConnection.getInputStream();
-            
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-            StringBuilder jsonSb = new StringBuilder();
-
-            br.lines().forEach(l -> jsonSb.append(l.trim()));
-
-            json = jsonSb.toString();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return json;
-    }
 	
 	public Endereco converterCep(Endereco endereco) {
 		ViaCEPClient client = new ViaCEPClient();

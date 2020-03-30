@@ -89,6 +89,10 @@ public class Pessoa implements Serializable{
 			inverseJoinColumns = {@JoinColumn(name = "CO_SEQ_PERFIL")}
 	)
 	private Set<Perfil> perfils = new HashSet<>();
+	
+	@Column(name = "DS_CAMINHO_IMAGEM")
+	private String imagem;
+	
 	/**
 	 * Metodo construtor da classe
 	 */
