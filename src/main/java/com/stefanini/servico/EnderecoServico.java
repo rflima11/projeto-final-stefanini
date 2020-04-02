@@ -13,7 +13,9 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 
 import com.stefanini.dao.EnderecoDao;
+import com.stefanini.dto.EnderecoDto;
 import com.stefanini.model.Endereco;
+import com.stefanini.parsers.EnderecoParserDTO;
 
 /**
  * 
@@ -26,11 +28,16 @@ import com.stefanini.model.Endereco;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class EnderecoServico implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	@Inject
 	private EnderecoDao dao;
 
 	@Inject
 	private CepServico cep;
+	
+	@Inject
+	private EnderecoParserDTO parser;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 
@@ -58,5 +65,12 @@ public class EnderecoServico implements Serializable {
 	public Optional<Endereco> encontrar(Long id) {
 		return dao.encontrar(id);
 	}
+
+	public Optional<List<Endereco>> getListParametros(@Valid EnderecoDto endereco) {
+		List<EnderecoDto> enderecos = parser.toDtoList(dao.getListParametros(endereco).get());
+		return Optional.of(parser.toEntityList(enderecos));
+	}
+	
+
 	
 }

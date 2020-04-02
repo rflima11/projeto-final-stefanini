@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import com.stefanini.model.Endereco;
+import com.stefanini.servico.CepServico;
 import com.stefanini.servico.EnderecoServico;
 
 @Path("enderecos")
@@ -36,6 +37,9 @@ public class EnderecoResource {
      */
     @Inject
     private EnderecoServico enderecoServico;
+    
+    @Inject
+    private CepServico cepServico;
     /**
      *
      */
@@ -48,7 +52,7 @@ public class EnderecoResource {
      * @return
      */
     @GET
-    public Response obterEnderecos() {
+    public Response obterEnderecos(Endereco endereco) {
         log.info("Obtendo lista de pessoas");
 
         MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters();
@@ -105,5 +109,11 @@ public class EnderecoResource {
     public Response obterEndereco(@PathParam("id") Long id) {
         return enderecoServico.encontrar(id).map(endereco -> Response.ok(endereco).build()).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
     }
+    
+    @GET
+	@Path("{cep}")
+	public Response obterCepNoParametro(@PathParam("cep") String cep) {
+		return Response.ok(cepServico.retornarEnderecoPorCep(cep)).build();
+	}
     
 }
