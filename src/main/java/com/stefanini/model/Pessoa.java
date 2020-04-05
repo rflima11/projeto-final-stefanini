@@ -15,15 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author joaopedromilhome
@@ -93,6 +88,11 @@ public class Pessoa implements Serializable{
 	@Column(name = "DS_CAMINHO_IMAGEM")
 	private String imagem;
 	
+	@Transient
+	private String base64Imagem;
+	
+	
+
 	/**
 	 * Metodo construtor da classe
 	 */
@@ -174,6 +174,26 @@ public class Pessoa implements Serializable{
 	public void setSituacao(Boolean situacao) {
 		this.situacao = situacao;
 	}
+	
+	public String getImagem() {
+		return imagem;
+	}
+
+
+	public void setImagem(String imagem) {
+		this.imagem = imagem;
+	}
+
+
+	public String getBase64Imagem() {
+		return base64Imagem;
+	}
+
+
+	public void setBase64Imagem(String base64Imagem) {
+		this.base64Imagem = base64Imagem;
+	}
+
 
 	@Override
 	public int hashCode() {

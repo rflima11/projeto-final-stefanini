@@ -1,7 +1,14 @@
 package com.stefanini.servico;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,6 +16,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.validation.Valid;
 
@@ -35,6 +43,8 @@ public class PessoaServico implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	private static String caminhoPasta = "C:\\AnexoTeste\\foto\\";
 
 	@Inject
 	private PessoaDao dao;
@@ -50,6 +60,9 @@ public class PessoaServico implements Serializable {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Pessoa salvar(@Valid Pessoa pessoa) {
+		if(Objects.nonNull(pessoa.getBase64Imagem()) && pessoa.getBase64Imagem().split(",").length > 1) {
+			pessoa.setImagem(this.salvarImagemAnexo(pessoa.getBase64Imagem(), pessoa.getEmail()));
+		}
 		return dao.salvar(pessoa);
 	}
 	/**
@@ -90,8 +103,7 @@ public class PessoaServico implements Serializable {
 	 * Buscar uma lista de Pessoa
 	 */
 	public Optional<List<Pessoa>> getList() {
-		List<PessoaDto> dto = parser.toDtoList(dao.getList().get());
-		return Optional.of(parser.toEntity(dto));
+		return dao.getList();
 	}
 
 	/**
@@ -101,5 +113,50 @@ public class PessoaServico implements Serializable {
 	public Optional<Pessoa> encontrar(Long id) {
 		return dao.encontrar(id);
 	}
+	
+	private String salvarImagemAnexo(String imageString, String email) {
+	    String caminhoDaFoto = caminhoPasta + email + ".jpg";
+	    imageString = imageString.split(",")[1];   
+	    BufferedImage image = null;
+	    byte[] imageByte;
+	    
+	    if(!new File(caminhoPasta).exists()) {
+		      new File(caminhoPasta).mkdir();
+		    }
+	    
+	    try {
+	        imageByte = Base64.getDecoder().decode(imageString.getBytes());
+	        
+	        ByteArrayInputStream bais = new ByteArrayInputStream(imageByte);
+	        image = ImageIO.read(bais);
+	        bais.close();
+	        ImageIO.write(image, "JPG", new File(caminhoDaFoto));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return caminhoDaFoto;
+	}
+	
+	private String carregarImagem(String email) {
+	    String caminhoDaFoto = caminhoPasta + email + ".jpg";
+	    
+	    File arquivoF = new File(caminhoDaFoto);
+	    return encodeFileToBase64(arquivoF);
+	}
+	
+	
+	private String encodeFileToBase64(File arquivoF) {
+	    try {
+	        byte[] fileContent = Files.readAllBytes(arquivoF.toPath());
+	        return Base64.getEncoder().encodeToString(fileContent);
+	    } catch (IOException e) {
+	        throw new IllegalStateException("Não foi possível ler o arquivo " + arquivoF, e);
+	    }
+	}
+	
+	public String testeMetodo() {
+		return "Teste bem sucedido";
+	}
+	
 
 }

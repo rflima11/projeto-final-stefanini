@@ -1,19 +1,30 @@
 package com.stefanini.resource;
 
-import com.stefanini.dto.ErroDto;
-import com.stefanini.dto.SucessoDto;
-import com.stefanini.exception.NegocioException;
-import com.stefanini.model.Pessoa;
-import com.stefanini.servico.PessoaServico;
-
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+
+import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+
+import com.stefanini.dto.ErroDto;
+import com.stefanini.exception.NegocioException;
+import com.stefanini.model.Pessoa;
+import com.stefanini.servico.PessoaServico;
 
 @Path("pessoas")
 @Produces(MediaType.APPLICATION_JSON)
@@ -106,5 +117,8 @@ public class PessoaResource {
 	public Response obterPessoa(@PathParam("id") Long id) {
 		return pessoaServico.encontrar(id).map(pessoas -> Response.ok(pessoas).build()).orElseGet(() -> Response.status(Status.NOT_FOUND).build());
 	}
+	
+	
+
 
 }

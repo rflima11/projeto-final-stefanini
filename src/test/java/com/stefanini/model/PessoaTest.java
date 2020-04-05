@@ -1,34 +1,70 @@
 package com.stefanini.model;
 
-import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 
 import org.junit.Test;
 
 import com.stefanini.dao.PessoaDao;
-import com.stefanini.resource.PessoaResource;
-import com.stefanini.servico.PessoaServico;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
 import mockit.Tested;
+import mockit.Verifications;
 
 
 
 public class PessoaTest {
 
-	@Tested PessoaResource testePessoa;
-	@Injectable PessoaDao dao;
+	
+	
+	@Injectable PessoaDao pessoaDao;
+	@Tested Pessoa pessoa;
+	
+	@PersistenceContext private EntityManager em;
+	
+
+	   @PostConstruct
+	   private void beginTransactionIfNotYet() {
+	      EntityTransaction transaction = em.getTransaction();
+
+	      if (!transaction.isActive()) {
+	         transaction.begin();
+	      }
+	   }
+
+	   @PreDestroy
+	   private void endTransactionWithRollbackIfStillActive() {
+	      EntityTransaction transaction = em.getTransaction();
+
+	      if (transaction.isActive()) {
+	         transaction.rollback();
+	      }
+	   }
+
+	   
 	
 	@Test
-	public void testaRetornoDePessoa() {
-		new Expectations() {{
-			testePessoa.obterPessoas(); 
-			result = Response.ok();
-			
-		}};
+	public void salvarPessoa() {
+		Pessoa pessoa1 = new Pessoa("Helena", "helena@hotmail.com", LocalDate.now(), Boolean.TRUE);
 		
-	//	testePessoa.obterPessoa(1L);
+		pessoaDao.salvar(pessoa1);
+		
+		new Expectations() {{
+            pessoa1.getNome();result = "Helena";
+        }};
+		
+        new Verifications() {{
+            pessoa1.getNome().contentEquals("Helena");
+        }};
 	}
+	
+
+	
 	
 }

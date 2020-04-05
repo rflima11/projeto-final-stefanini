@@ -33,10 +33,10 @@ public class PessoaPerfilServico implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private PessoaPerfilDao dao;
+	private PessoaPerfilDao daoPerfil;
 
 	public Stream<PessoaPerfil> buscarPessoaPerfil(Long idPessoa, Long idPerfil) {
-		return dao.buscarPessoaPerfil(idPessoa,idPerfil);
+		return daoPerfil.buscarPessoaPerfil(idPessoa,idPerfil);
 	}
 
 

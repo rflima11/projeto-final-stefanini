@@ -113,7 +113,8 @@ public class EnderecoResource {
     @GET
 	@Path("{cep}")
 	public Response obterCepNoParametro(@PathParam("cep") String cep) {
-		return Response.ok(cepServico.retornarEnderecoPorCep(cep)).build();
+		return Optional.of(cepServico.retornarEnderecoPorCep(cep)).map(endereco -> Response.ok(endereco).build()).orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
+				//Response.ok(cepServico.retornarEnderecoPorCep(cep)).build();
 	}
     
 }
